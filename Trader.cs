@@ -1,20 +1,18 @@
 namespace Apps;
 
-class Trader : Iuser
+class Trader : IUser
 {
   public string Name;
   string u_password;
 
-  public Trader(string name, string Password)
+  public Trader(string n, string p)
   {
-    Name = name;
-    u_password = Password;
+    Name = n;
+    u_password = p;
   }
 
-  public bool TryLoggin(string username, string Password)
+  public bool TryLoggin(string username, string password)
   {
-    return username == Name && Password == u_password;
+    return username == Name && password == u_password;
   }
-
-  
 }

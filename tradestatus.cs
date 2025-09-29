@@ -1,8 +1,8 @@
-namespace Apps;
+// namespace Apps;
 
-enum tradestatus
-{
-  Pending,
-  Accepted,
-  Denied,
-}
+// enum tradestatus
+// {
+//   Pending,
+//   Accepted,
+//   Denied,
+// }

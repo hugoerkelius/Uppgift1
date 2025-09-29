@@ -1,6 +1,6 @@
 namespace Apps;
 
-interface Iuser
+interface IUser
 {
   public bool TryLoggin(string username, string password);
 }
