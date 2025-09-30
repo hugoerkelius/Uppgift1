@@ -3,7 +3,7 @@ namespace Apps;
 class Trader : IUser
 {
   public string Name;
-  string u_password;
+  public string u_password;
 
   public Trader(string n, string p)
   {

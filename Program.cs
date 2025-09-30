@@ -3,7 +3,7 @@
 List<IUser> users = new List<IUser>();
 users.Add(new Trader("Hugo", "123"));
 
-Dictonary<string, List<Item>> trader_item = new Dictonary<string, List<Item>>();
+// Dictonary<string, List<Item>> trader_item = new Dictonary<string, List<Item>>();
 
 IUser? active_user = null;
 
@@ -73,14 +73,34 @@ while (running)
       break;
 
       case "2":
+        Console.Clear();
         Console.WriteLine("Create a new trader\nEnter a username: ");
-        string newUsername = Console.ReadLine();
-        Console.WriteLine("Enter a password: ");
-        string newPassword = Console.ReadLine();
+        string newName = Console.ReadLine();
+        
+        string newPassword = "";
 
-        Trader newTrader = new Trader(newUsername, newPassword);
+        while (true)
+        {
+          Console.WriteLine("Enter a password with atleast 8 characters");
+          newPassword = Console.ReadLine();
+
+          if (newPassword.Length >= 8)
+          {
+            break;
+          }
+          Console.WriteLine("Password must contain atleast 8 characters\nPress enter to continue");
+          Console.ReadLine();
+          Console.Clear();
+        }
+        
+
+        Trader newTrader = new Trader(newName, newPassword);
 
         users.Add(newTrader);
+
+        List<string> newLine = new List<string> { $"{newTrader.Name},{newTrader.u_password}" };
+        File.AppendAllLines("traders.csv", newLine);
+
         Console.WriteLine("New trader created\nPress ENTER to continue...");
         Console.ReadLine();
         break;
