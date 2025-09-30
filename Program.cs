@@ -1,7 +1,9 @@
 ﻿using Apps;
 
 List<IUser> users = new List<IUser>();
-users.Add(new Trader("hugo", "123"));
+users.Add(new Trader("Hugo", "123"));
+
+Dictonary<string, List<Item>> trader_item = new Dictonary<string, List<Item>>();
 
 IUser? active_user = null;
 
@@ -23,20 +25,30 @@ while (running)
       Console.Clear();
 
       Console.WriteLine("Name: ");
-      string username = Console.ReadLine().ToLower();
+      string username = Console.ReadLine();
       Console.Clear();
 
       Console.WriteLine("Password: ");
-      string password = Console.ReadLine().ToLower();
+      string password = Console.ReadLine();
       Console.Clear();
+
+      bool exists = false;
 
       foreach(IUser user in users)
       {
         if(user.TryLoggin(username, password))
         {
           active_user = user;
+          exists = true;
           break;
         }  
+      }
+
+      if (!exists)
+      {
+        Console.WriteLine("Wrong username or password\nPress ENTER to continue...");
+        Console.ReadLine();
+        break;
       }
 
       if(active_user is Trader t)
@@ -59,6 +71,19 @@ while (running)
         }
       }
       break;
+
+      case "2":
+        Console.WriteLine("Create a new trader\nEnter a username: ");
+        string newUsername = Console.ReadLine();
+        Console.WriteLine("Enter a password: ");
+        string newPassword = Console.ReadLine();
+
+        Trader newTrader = new Trader(newUsername, newPassword);
+
+        users.Add(newTrader);
+        Console.WriteLine("New trader created\nPress ENTER to continue...");
+        Console.ReadLine();
+        break;
     }
   }
 }
