@@ -31,15 +31,7 @@ class Trader : IUser
         break;
       }
     }
-
-    if(inList != null)
-    {
-      inList.Amount += amount;
-    }
-    else
-    {
-      Inventory.Add(new Items(itemName, amount, description));
-    }
+    Inventory.Add(new Items(itemName, amount, description));
   }
 
   public void ListItems()

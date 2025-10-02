@@ -102,8 +102,8 @@ while (running)
                 Console.Clear();
                 trader.ListItems();
                 Console.WriteLine("Press ENTER to continue");
-
                 Console.ReadLine();
+                Console.Clear();
                 break;
 
               case "2":
@@ -127,6 +127,7 @@ while (running)
 
                 Console.WriteLine("Item added to inventory\nPress ENTER to continue");
                 Console.ReadLine();
+                Console.Clear();
                 break;
 
               case "5":
