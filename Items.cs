@@ -16,6 +16,6 @@ class Items
 
     public string Info()
     {
-        return ItemName + "\n" + Amount + "\n" + Description;
+        return ItemName + " | " + Amount + " | " + Description;
     }
 }
