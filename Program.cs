@@ -1,6 +1,8 @@
-﻿using Apps;
+﻿using System.Runtime.CompilerServices;
+using Apps;
 
 List<IUser> users = new List<IUser>();
+List<Trade> trades = new List<Trade>();
 
 if(File.Exists("traders.csv"))
 {
@@ -92,7 +94,7 @@ while (running)
           if (active_user is Trader trader)
           {
             Console.WriteLine("Welcome trader " + trader.Name);
-            Console.WriteLine("What would you like to do?\n1. List own items\n2. Add items to your inventory\n3. List all traders items\n4. Trade\n5. Logout");
+            Console.WriteLine("What would you like to do?\n1. List own items\n2. Add items to your inventory\n3. Trade\n4. Logout");
 
             string userInput = Console.ReadLine();
 
@@ -130,7 +132,34 @@ while (running)
                 Console.Clear();
                 break;
 
-              case "5":
+              case "3":
+                Console.Clear();
+                Console.WriteLine("Avalible traders and their items: ");
+                foreach (var u in users)
+                {
+                  if (u is Trader otherTrader && otherTrader != trader)
+                  {
+                    Console.WriteLine($"\nTrader: {otherTrader.Username} ({otherTrader.Name})");
+                    otherTrader.ListItems();
+                  }
+                }
+                Console.WriteLine("\nEnter username of who you want to trade with: ");
+                string TargetTrader = Console.ReadLine();
+
+                var tradePartner = users.Find(u => u is Trader t && t.Username == TargetTrader) as Trader;
+
+                if (tradePartner == null || tradePartner == trader)
+                {
+                  Console.WriteLine("Invalid trader inputed\nPress ENTER to continue");
+                  Console.ReadLine();
+                  break;
+                }
+                break;
+                // Console.Clear();
+                // Console.WriteLine($"Items from {tradePartner.Name}");
+                // tradePartner.ListItems();
+
+              case "4":
                 Console.Clear();
                 active_user = null;
                 exists = false;

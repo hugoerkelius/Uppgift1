@@ -1,6 +1,6 @@
 namespace Apps;
 
-class Items
+public class Items
 
 {
     public string ItemName;

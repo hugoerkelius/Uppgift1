@@ -1,11 +1,11 @@
 namespace Apps;
 
-class Trader : IUser
+public class Trader : IUser
 {
   public string Name;
   public string Username;
   public string Password;
-  public List<Items> Inventory;
+  public List<Items> Inventory; 
 
   public Trader(string username, string name, string password)
   {
