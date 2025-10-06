@@ -1,25 +1,27 @@
+using Microsoft.VisualBasic;
+
 namespace Apps;
 
-public enum TradeStatus
+public enum TradeStatus //Förbestämda värden för vad en trade kan vara
 {
   Pending,
   Accepted,
   Denied,
 }
 
-public class Trade
+public class Trade //Skapar en klass för trades
 {
-  private Trader fromTrader;
-  private Trader toTrader;
-  private string ownItemName;
+  private Trader fromTrader; //Vilka användare som är involverade
+  private Trader toTrader; 
+  private string ownItemName; //Det egna items innehåll
   private int ownItemAmount;
   private string ownItemDescription;
-  private string reqItemName;
+  private string reqItemName; //Det efterfrågade items innehåll
   private int reqItemAmount;
   private string reqItemDescription;
-  private TradeStatus status;
+  private TradeStatus status; //Status på trade
 
-  public Trade(Trader from, Trader to, Items own, Items req)
+  public Trade(Trader from, Trader to, Items own, Items req)//Användardata och items hämtas när användaren skapar en trade i programmet och sätts alltid till pending
   {
     fromTrader = from;
     toTrader = to;
@@ -33,6 +35,7 @@ public class Trade
   }
 
   public Trade(Trader from, Trader to, string ownName, int ownAmount, string ownDesc, string reqName, int reqAmount, string reqDesc, TradeStatus tradeStatus)
+  //Användardata och items hämtas från trades.csv för att skapa en trade när programmet startar
   {
     fromTrader = from;
     toTrader = to;
@@ -43,7 +46,7 @@ public class Trade
     reqItemDescription = reqDesc;
     status = tradeStatus;
   }
-
+  
   public Trader GetFromTrader() { return fromTrader; }
   public Trader GiveTrader() { return toTrader; }
   public TradeStatus GetStatus() { return status; }
@@ -52,22 +55,22 @@ public class Trade
   public string ReqInfo() => $"{reqItemName} | {reqItemAmount} | {reqItemDescription}";
   public string OfferedName() => ownItemName;
   public int OfferedAmount() => ownItemAmount;
-  public string OfferedDescription() => ownItemDescription;
+  public string OfferedDesc() => ownItemDescription;
   public string ReqName() => reqItemName;
   public int ReqAmount() => reqItemAmount;
-  public string ReqDescription() => reqItemDescription;
+  public string ReqDesc() => reqItemDescription;
 
 
-  public void Accept()
+  public void Accept() //Metod för att acceptera trade
   {
-    if (status != TradeStatus.Pending) return;
-    status = TradeStatus.Accepted;
-    var fromInv = fromTrader.Inventory;
+    if (status != TradeStatus.Pending) return; //Kontrollerar att status fortfarande är pending
+    status = TradeStatus.Accepted;//ändrar pending till accepeted
+    var fromInv = fromTrader.Inventory;//"Flyttar" item från olika användares inventorys
     var toInv = toTrader.Inventory;
     var fromItem = fromInv.Find(i => i.ItemName == ownItemName);
     var toItem = toInv.Find(i => i.ItemName == reqItemName);
 
-    if (fromItem != null)
+    if (fromItem != null)//Urskilljer vem som får vad och vad det är som byts
     {
       fromInv.Remove(fromItem);
       toInv.Add(fromItem);
@@ -78,12 +81,11 @@ public class Trade
       fromInv.Add(toItem);
     }
   }
-  public void Deny()
+  public void Deny()//Ändrar från pending till denied om den är pending
   {
     if (status == TradeStatus.Pending)
     {
       status = TradeStatus.Denied;
     }
   }
-  // public void SetStatus(TradeStatus newStatus) => status = newStatus;
 }

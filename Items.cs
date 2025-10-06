@@ -1,6 +1,6 @@
 namespace Apps;
 
-public class Items
+public class Items //Skapar en klass Items och vad de ska innehålla
 
 {
     public string ItemName;
@@ -14,7 +14,7 @@ public class Items
         Description = description;
     }
 
-    public string Info()
+    public string Info() //Metod för att snabbt hämta items innehåll
     {
         return ItemName + " | " + Amount + " | " + Description;
     }
