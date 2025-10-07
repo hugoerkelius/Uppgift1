@@ -7,21 +7,21 @@ public enum TradeStatus //Förbestämda värden för vad en trade kan vara
   Denied,
 }
 
-public class Trade
+public class Trade //Skapar klassen för trades som innehåller värden för vem som är involverade i traden och vilka items samt status på traden
 {
   private Trader fromTrader;
   private Trader toTrader;
   private ItemInfo offered;
   private ItemInfo requested;
-  private TradeStatus status;
+  private TradeStatus status;//Nyttjar ENUM ovan för att definera status på trade
 
   public Trade(Trader fromT, Trader toT, Items reqItem, Items offerItem)
   {
     fromTrader = fromT;
     toTrader = toT;
-    offered = new ItemInfo(offerItem.ItemName, offerItem.Amount, offerItem.Description);
-    requested = new ItemInfo(reqItem.ItemName, reqItem.Amount, reqItem.Description);
-    status = TradeStatus.Pending;
+    offered = new ItemInfo(offerItem.ItemName, offerItem.Amount, offerItem.Description);//Definera vad offered item(det användare skickar) ska innehålla för data,
+    requested = new ItemInfo(reqItem.ItemName, reqItem.Amount, reqItem.Description);//Definerar vad requested item(vad användaren vill ha) ska innehålla för data
+    status = TradeStatus.Pending;//Sätter status på trade till pending tills den ändras i accepet eller deny
   }
 
   public Trade(Trader fromT, Trader toT, ItemInfo offerItem, ItemInfo reqItem, TradeStatus stat)
@@ -33,18 +33,11 @@ public class Trade
     status = stat;
   }
 
-  public void SetStatus(TradeStatus newStatus) => status = newStatus;
-
-  public Trader GetFromTrader() => fromTrader;
-  public Trader GiveToTrader() => toTrader;
-  public TradeStatus GetStatus() => status;
-  public ItemInfo GetOffered() => offered;
-  public ItemInfo GetRequested() => requested;
-
-  public string Info()
-  {
-    return $"From: {fromTrader}, To: {toTrader}, Status: {status}\nOffered: {offered.Show()}\nRequested: {requested.Show()}";
-  }
+  public Trader GetFromTrader() => fromTrader;//Returnar vem som har skickat/skapat traden
+  public Trader GiveToTrader() => toTrader;//Returnar vem som motar traden
+  public TradeStatus GetStatus() => status;//Ger status på trade
+  public ItemInfo GetOffered() => offered;//Return på eget item som ska tradeas med innehållet från ItemInfo
+  public ItemInfo GetRequested() => requested;// -||- Men på det item man vill ha 
 
   public void Accept() //Metod för att acceptera trade
   {
@@ -55,12 +48,12 @@ public class Trade
     var fromItem = fromInv.Find(i => i.ItemName == offered.GetName());
     var toItem = toInv.Find(i => i.ItemName == requested.GetName());
 
-    if (fromItem != null)//Urskilljer vem som får vad och vad det är som byts
+    if (fromItem != null)//Måste innehållet ett värde
     {
-      fromInv.Remove(fromItem);
-      toInv.Add(fromItem);
+      fromInv.Remove(fromItem);//Tar bort valt item från den som skickas inventory
+      toInv.Add(fromItem);//Lägger till valt item som blir requestat
     }
-    if (toItem != null)
+    if (toItem != null)//Måste innehålla ett värde
     {
       toInv.Remove(toItem);
       fromInv.Add(toItem);
@@ -74,13 +67,13 @@ public class Trade
     }
   }
 }
-  public class ItemInfo
+  public class ItemInfo//Klass för att hämta infon på respektive items
   {
     private string name;
     private int amount;
     private string description;
 
-    public ItemInfo(string n, int a, string d)
+    public ItemInfo(string n, int a, string d)//När jag kallar på ItemInfo ska den ge denna data
     {
       name = n;
       amount = a;

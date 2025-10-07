@@ -37,7 +37,7 @@ public class Trader : IUser //Skapar en klass för traders med namn osv och en e
     {
       foreach (var item in Inventory)
       {
-        Console.WriteLine(item.Info());
+        Console.WriteLine(item.Info());//visar vad varje item har för innehåll
       }
     }
   }
