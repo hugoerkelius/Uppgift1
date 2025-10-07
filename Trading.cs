@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace Apps;
 
 public enum TradeStatus //Förbestämda värden för vad en trade kan vara
