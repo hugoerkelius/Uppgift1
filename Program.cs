@@ -15,7 +15,7 @@ class Program
                 string[] traderData = line.Split(',');
                 if (traderData.Length == 3)
                 {
-                    string username = traderData[0];
+                    string username = traderData[0];    
                     string name = traderData[1];
                     string password = traderData[2];
                     users.Add(new Trader(username, name, password));
@@ -67,7 +67,9 @@ class Program
 
                     if (fromTrader != null && toTrader != null)
                     {
-                        trades.Add(new Trade(fromTrader, toTrader, ownName, ownAmount, ownDesc, reqName, reqAmount, reqDesc, status));
+                        var offeredItem = new ItemInfo(ownName, ownAmount, ownDesc);
+                        var requestedItem = new ItemInfo(reqName, reqAmount, reqDesc);
+                        trades.Add(new Trade(fromTrader, toTrader, offeredItem, requestedItem, status));
                     }
                 }
             }
@@ -230,7 +232,12 @@ class Program
                                             break;
                                         }
 
-                                        Trade newTrade = new Trade(trader, tradePartner, offerItem, reqItem);//Skapar ett nytt objekt av klassen Trade med namn NewTrade av ovan införd data som sedan lägger till det i listan trades
+                                        
+                                        var offerItemInfo = new ItemInfo(offerItem.ItemName, offerItem.Amount, offerItem.Description);
+                                        var reqItemInfo = new ItemInfo(reqItem.ItemName, reqItem.Amount, reqItem.Description);
+
+                                        //Skapar ett nytt objekt av klassen Trade med namn NewTrade av ovan införd data som sedan lägger till det i listan trades
+                                        Trade newTrade = new Trade(trader, tradePartner, offerItemInfo, reqItemInfo, TradeStatus.Pending);
                                         trades.Add(newTrade);
 
                                         Console.WriteLine("Trade offer created\nPress ENTER to continue");
@@ -240,7 +247,7 @@ class Program
 
                                     case "4":
                                         Console.Clear();
-                                        var inc = trades.FindAll(t => t.GiveTrader() == trader && t.GetStatus() == TradeStatus.Pending);//Frågar om det existerar några inkommande trades till användaren
+                                        var inc = trades.FindAll(t => t.GiveToTrader() == trader && t.GetStatus() == TradeStatus.Pending);//Frågar om det existerar några inkommande trades till användaren
                                         if (inc.Count == 0)//Finns det inga inkommande trades meddelas det
                                         {
                                             Console.WriteLine("No avalible trades");
@@ -251,14 +258,14 @@ class Program
                                             for (int i = 0; i < inc.Count; i++)//Existerar det trades kommer dessa listas här från 1 uppåt
                                             {
                                                 var tradeReq = inc[i];//Array för inc
-                                                Console.WriteLine($"{i + 1}. {tradeReq.GetFromTrader().Username} offers {tradeReq.OfferedInfo()} for your {tradeReq.ReqInfo()}");
+                                                Console.WriteLine($"{i + 1}. {tradeReq.GetFromTrader().Username} offers {tradeReq.GetOffered().Show()} for your {tradeReq.GetRequested().Show()}");
                                                 //Här listas innehållet av en trade, vem som har skickat det och vad som önskas tradeas.
                                             }
 
                                             Console.WriteLine("Enter index of the trade you want to handle");
-                                            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= inc.Count)//Användare skriver in det indexnr på vilken trade man vill hantera
-                                                Console.Clear();
+                                            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= inc.Count)//Användare skriver in det indexnr på vilken trade man vill hantera                                                
                                             {
+                                                Console.Clear();
                                                 var chosen = inc[choice - 1];
 
                                                 Console.WriteLine("Type Accept to accept trade or deny to deny trade");
@@ -276,8 +283,9 @@ class Program
                                                     Console.WriteLine("Trade denied");
                                                 }
 
-                                                File.WriteAllLines("trades.csv", trades.Select(t => $"{t.GetFromTrader().Username},{t.GiveTrader().Username},{t.OfferedName()},{t.OfferedAmount()},{t.OfferedDesc()},{t.ReqName()},{t.ReqAmount()},{t.ReqDesc()},{t.GetStatus()}"));
-                                            }   //Sparar vem som har tradeat vad i en csv fil där namn på mottagande och givande trader finns med och vad det är för namn, amount och desc på item man får och byter bort
+                                                File.WriteAllLines("trades.csv", trades.Select(t => $"{t.GetFromTrader().Username},{t.GiveToTrader().Username},{t.GetOffered().GetName()},{t.GetOffered().GetAmount()},{t.GetOffered().GetDescription()},{t.GetRequested().GetName()},{t.GetRequested().GetAmount()},{t.GetRequested().GetDescription()},{t.GetStatus()}"));
+                                                // }   //Sparar vem som har tradeat vad i en csv fil där namn på mottagande och givande trader finns med och vad det är för namn, amount och desc på item man får och byter bort
+                                            }
                                         }
                                         Console.WriteLine("Press ENTER to continue");
                                         Console.ReadLine();
@@ -286,7 +294,7 @@ class Program
                                     case "5":
                                         Console.Clear();
                                         Console.WriteLine("Trade history: ");
-                                        var history = trades.FindAll(t => (t.GetFromTrader() == trader || t.GiveTrader() == trader) && t.GetStatus() != TradeStatus.Pending);
+                                        var history = trades.FindAll(t => (t.GetFromTrader() == trader || t.GiveToTrader() == trader) && t.GetStatus() != TradeStatus.Pending);
                                         //Letar efter genomförda trades
                                         if (history.Count == 0)//finns inga genomförda trades
                                         {
@@ -297,10 +305,10 @@ class Program
                                             foreach (var trade in history)//Hämtar värden på respektive trade som har genomförts. Status på genomförd trade (Accepted eller denied), användarnamn på de som genomfört trade och vad det är för items som har tradeats från vem
                                             {
                                                 string status = trade.GetStatus().ToString();
-                                                string partner = trade.GetFromTrader() == trader ? trade.GiveTrader().Username : trade.GetFromTrader().Username;
+                                                string partner = trade.GetFromTrader() == trader ? trade.GiveToTrader().Username : trade.GetFromTrader().Username;
                                                 string order = trade.GetFromTrader() == trader ? "You offered" : "You recivied";
 
-                                                Console.WriteLine($"[{status}] {order} {partner}: \nTheir item: {trade.ReqInfo()} \nYour item: {trade.OfferedInfo()}\n----");
+                                                Console.WriteLine($"[{status}] {order} {partner}: \nTheir item: {trade.GetRequested().Show()} \nYour item: {trade.GetOffered().Show()}\n----");
                                             }
                                         }
                                         Console.WriteLine("Press ENTER to continue");
