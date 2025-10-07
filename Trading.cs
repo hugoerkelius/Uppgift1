@@ -1,11 +1,4 @@
-// namespace Apps;
-
-// public enum TradeStatus //Förbestämda värden för vad en trade kan vara
-// {
-//   Pending,
-//   Accepted,
-//   Denied,
-// }
+namespace Apps;
 
 // public class Trade //Skapar en klass för trades
 // {
